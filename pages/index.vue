@@ -1,26 +1,26 @@
 <template>
-    <div class="flex flex-col py-10 bg-gradient-to-b from-gray-100 to-blue-100 min-h-screen">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-blue-800 mb-6">Aplikacja z filmami</h2>
-            <div class="flex justify-center items-center mb-10">
-                <input v-model="searchTerm" placeholder="Wyszukaj film" type="text" class="px-4 py-2 w-full max-w-md border border-blue-300 rounded-md shadow focus:outline-none focus:border-blue-500 transition duration-300">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-                <MovieCard :movie="movie" v-for="movie in data?.results" :key="movie.id"/>
-            </div>
-            <div class="flex justify-center items-center space-x-4 mt-10">
-                <button @click="previousPage" :disabled="page.value === 1" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">Poprzednia</button>
-                <span class="text-lg text-gray-700">Strona {{ page }} z {{ data?.total_pages }}</span>
-                <button @click="nextPage" :disabled="page.value === data?.total_pages" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">Następna</button>
-            </div>
-        </div>
-    </div>
+  <div class="app-container">
+    <header class="header">
+      <h1 class="title">Aplikacja z filmami</h1>
+      <input v-model="searchTerm" placeholder="Wyszukaj film" type="text" class="search-input">
+    </header>
+    <main class="main-content">
+      <div class="movies-display">
+        <MovieCard :movie="movie" v-for="movie in data?.results" :key="movie.id"/>
+      </div>
+      <div class="pagination-controls">
+        <button @click="previousPage" :disabled="page.value === 1" class="pagination-button">Poprzednia</button>
+        <span class="page-info">Strona {{ page }} z {{ data?.total_pages }}</span>
+        <button @click="nextPage" :disabled="page.value === data?.total_pages" class="pagination-button">Następna</button>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { ApiResponse } from '~~/types/ApiResponse';
-import MovieCard from '~/components/MovieCard.vue'; // Ensure the import path is correct
+import MovieCard from '~/components/MovieCard.vue';
 import { useDebounce } from '@vueuse/core';
 
 const searchTerm = ref('');
@@ -48,19 +48,74 @@ onMounted(execute);
 </script>
 
 <style scoped>
-.bg-gradient-to-b {
-    background-image: linear-gradient(to bottom, #f7fafc, #ebf8ff);
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-image: linear-gradient(to top right, #89cff0, #b6d0e2);
 }
 
-.shadow {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.header {
+  padding: 2rem;
+  width: 100%;
+  text-align: center;
+  background-color: #3b82f6;
+  color: white;
 }
 
-.hover\:bg-blue-700:hover {
-    background-color: #2b6cb0;
+.title {
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
 }
 
-.disabled\:opacity-50:disabled {
-    opacity: 0.5;
+.search-input {
+  width: 90%;
+  max-width: 600px;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+  background-color: white; 
+}
+
+.movies-display {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 300ms;
+}
+
+.pagination-button:hover {
+  background-color: #1d4ed8;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: #4b5563;
+  font-size: 1.2rem;
 }
 </style>
